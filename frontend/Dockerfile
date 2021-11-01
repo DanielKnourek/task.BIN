@@ -1,4 +1,3 @@
-# FROM node:lts-alpine3.14
 FROM node:16
 
 # # Create app directory
@@ -9,9 +8,6 @@ WORKDIR /workspace
 COPY package*.json ./
 
 RUN yarn install
-
-# Building app
-RUN yarn build
 
 # Running the app dev server
 CMD ["yarn", "dev"]
