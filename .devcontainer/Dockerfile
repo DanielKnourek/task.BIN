@@ -1,23 +1,28 @@
 # https://github.com/KumarAbhirup/dockerized/blob/master/packages/landingpage/Dockerfile
-ARG VARIANT=16
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
-# ENV PORT 3000
+# FROM node:lts-alpine3.14
+FROM node:12
+
+ENV PORT 3000
+# RUN apk add git
+
+ENV CHOKIDAR_USEPOLLING=true
 
 # # Create app directory
 # RUN mkdir -p /usr/src/app
+RUN mkdir -p /home/workspace
 # WORKDIR /usr/src/app
-WORKDIR /workspace
+WORKDIR /home/workspace
 
-# # Installing dependencies
-# COPY package*.json /usr/src/app/
-# RUN npm install
+# Installing dependencies
+COPY package*.json /home/workspace/
+RUN yarn install
+# RUN npm install --no-bin-links
 
 # # Copying source files
-# COPY . /usr/src/app
-
+COPY . /home/workspace
 
 # Building app
-RUN npm run build
+RUN yarn build
 
-# Running the app
-CMD "npm" "run" "dev"
+# Running the app dev server
+CMD yarn dev

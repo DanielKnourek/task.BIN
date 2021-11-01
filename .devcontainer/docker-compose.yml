@@ -4,11 +4,12 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-      args:        
-        VARIANT: 16
+      # args:        
+      #   VARIANT: 16
       
     volumes:
-      - ..:/workspace:cached
+      - ..:/home/workspace
+      # - ..:/home/workspace:cached
     
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
@@ -17,12 +18,12 @@ services:
     # networks: ['stack']
     
     # Uncomment the next line to use a non-root user for all processes.
-    user: node
+    # user: node ##UNCOMMENT##
     
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
   
   # db_es:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
