@@ -1,0 +1,67 @@
+version: "3.9"
+services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      
+    volumes:
+      - ../frontend:/workspace
+      - /workspace/node_modules
+      - /workspace/.next
+      # - ..:/home/workspace:cached
+    
+    # Overrides default command so things don't shut down after the process ends.
+    # command: sleep infinity
+    
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    # networks: ['stack']
+    
+    # Uncomment the next line to use a non-root user for all processes.
+    # user: node ##UNCOMMENT##
+    
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+    # ports:
+      # - 3000:3000
+  
+  # db_es:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+  #   # restart: unless-stopped
+
+  #   environment:
+  #     - "discovery.type=single-node"
+  #     - "http.max_content_length=500mb"
+  #     - "http.compression=false"
+  #     - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+  #     # - ELASTICSEARCH_USERNAME=elastic
+  #     # - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    
+  #   networks: ['stack']
+
+  #   ports:
+  #     - 9200:9200
+  #     - 9300:9300
+  #   # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
+  #   # (Adding the "ports" property to this file will not forward from a Codespace.)
+  
+  # db_kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.12.0
+  #   # restart: unless-stopped
+    
+  #   environment:
+  #     - "ELASTICSEARCH_HOSTS=http://db_es:9200"
+  #     # - ELASTICSEARCH_USERNAME=elastic
+  #     # - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+    
+  #   links: ['db_es']
+  #   depends_on: ['db_es']
+    
+  #   networks: ['stack']
+  #   # network_mode: service:db_es
+
+  #   ports:
+  #     - 5601:5601
+
+# networks:
+#   stack: {}

@@ -1,0 +1,30 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/python-3
+{
+	"name": "Task.bin App",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "frontend",
+	"workspaceFolder": "/workspace",
+
+	// Set *default* container specific settings.json values on container create.
+	// "settings": { 
+	// },
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"k--kato.intellij-idea-keybindings",
+		"dbaeumer.vscode-eslint",
+		"bradlc.vscode-tailwindcss",
+		"csstools.postcss"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [9200,9300, 5601],
+	"forwardPorts": [3000],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	// "postStartCommand": "yarn dev"
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "node" ##UNCOMMENT##
+}
