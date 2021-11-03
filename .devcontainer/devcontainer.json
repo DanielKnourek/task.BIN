@@ -13,7 +13,9 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"k--kato.intellij-idea-keybindings",
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"bradlc.vscode-tailwindcss",
+		"csstools.postcss"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [9200,9300, 5601],
