@@ -15,7 +15,8 @@
 		"k--kato.intellij-idea-keybindings",
 		"dbaeumer.vscode-eslint",
 		"bradlc.vscode-tailwindcss",
-		"csstools.postcss"
+		"csstools.postcss",
+		"rangav.vscode-thunder-client"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [9200,9300, 5601],
