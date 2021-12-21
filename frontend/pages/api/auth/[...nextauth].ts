@@ -7,8 +7,8 @@ import Discord from 'next-auth/providers/discord'
 const nextAuth = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!,
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -52,7 +52,6 @@ const nextAuth = NextAuth({
   },
   callbacks: {
     async jwt({ token, account }) {
-
       return token
     },
     async session({ session, token, user }) {
