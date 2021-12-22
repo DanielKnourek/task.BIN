@@ -1,3 +1,5 @@
+import { ApiResponse, RequestParams } from '@elastic/elasticsearch'
+
 export interface ShardsResponse {
     total: number;
     successful: number;
@@ -35,4 +37,7 @@ export interface SearchResponse<T> {
         }>;
     };
     aggregations?: any;
+}
+
+export interface ApiSearchResponse<T> extends ApiResponse<SearchResponse<T>>{
 }
