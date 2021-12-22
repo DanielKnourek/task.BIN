@@ -2,7 +2,7 @@ export interface ShardsResponse {
     total: number;
     successful: number;
     failed: number;
-    skipped: number;
+    skipped?: number;
 }
 
 export interface Explanation {
@@ -35,4 +35,15 @@ export interface SearchResponse<T> {
         }>;
     };
     aggregations?: any;
+}
+
+export interface IndexResponse {
+    _index: string;
+    _type: string;
+    _id: string;
+    _version?: number;
+    result: string,
+    _shards: ShardsResponse;
+    _seq_no: number;
+    _primary_term: number;
 }
