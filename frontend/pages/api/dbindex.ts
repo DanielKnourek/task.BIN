@@ -1,32 +1,55 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import Client_meredith from '../../lib/db/Client_meredith'
-import { ApiResponse, RequestParams } from '@elastic/elasticsearch'
+import { RequestParams } from '@elastic/elasticsearch'
 import { IDlessTask } from '../../types/interfaces/Task'
+import { IndexResponse } from '../../types/interfaces/ElasticSearch'
 
 const test = async (
     req: NextApiRequest,
     res: NextApiResponse
 ) => {
-    const IDlessTask: IDlessTask = {
+    const newTask: IDlessTask = {
         creationTimestamp: Date.now(),
-        ownerID: "global",
+        ownerID: "daniel",
         public: true,
         content: {
             headline: "headline",
-            content: "Hello world!",
+            content: "Welcome to stardewValley",
         }
     }
-    //   let status = await Client_meredith.cluster.health();
-    const doc1: RequestParams.Index = {
+    const newTaskQuerry: RequestParams.Index<IDlessTask> = {
         index: 'task',
-        body: IDlessTask
+        body: newTask
     }
-    let result = await Client_meredith.index(doc1);
-    let response = {
-        greeting: "Hello",
-        result: result,
-    };
-    res.send(JSON.stringify(response, null, 2));
+    
+    Client_meredith.index<IndexResponse>(newTaskQuerry)
+    .then(({ body, statusCode, headers, warnings, meta }) => {
+        if (statusCode != 201) { throw new Error("Request to database was unsuccessful."); }
+        
+        res.send(JSON.stringify({ body }, null, 2));
+    }).catch(reason => {
+        res.status(503).send(reason.toString());
+    })
 }
 
 export default test;
+
+// POST /task/_doc
+// {
+//   "id": "123654"
+// }
+
+// {
+//     "_index" : "task",
+//     "_type" : "_doc",
+//     "_id" : "8s4F430BjShMp9fDOIsC",
+//     "_version" : 1,
+//     "result" : "created",
+//     "_shards" : {
+//       "total" : 2,
+//       "successful" : 2,
+//       "failed" : 0
+//     },
+//     "_seq_no" : 6,
+//     "_primary_term" : 1
+//   }
