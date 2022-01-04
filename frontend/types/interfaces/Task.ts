@@ -7,10 +7,13 @@ export type TaskContent = {
 export type Task = {
     id: string,
     ownerID: string,
-    creationTimestamp: number,
-    exiprationTimestamp?: number,
+    creationTimestamp: Date,
+    exiprationTimestamp?: Date,
     public: boolean,
     content: TaskContent,
+    completed: boolean,
 };
 
 export type IDlessTask = Omit<Task, 'id'>;
+
+export type NewTask = Pick<Task, 'public' | 'content' | 'exiprationTimestamp'>;

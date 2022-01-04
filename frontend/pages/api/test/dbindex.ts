@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Client_meredith from '../../lib/db/Client_meredith'
-import { RequestParams } from '@elastic/elasticsearch'
-import { IDlessTask } from '../../types/interfaces/Task'
-import { IndexResponse } from '../../types/interfaces/ElasticSearch'
+import { IDlessTask } from '../../../types/interfaces/Task'
+import postTask from '../../../lib/task/postTask'
 
 const test = async (
     req: NextApiRequest,
@@ -14,19 +12,12 @@ const test = async (
         public: true,
         content: {
             headline: "headline",
-            content: "Welcome to stardewValley",
+            content: "Subnautica čumík 5",
         }
     }
-    const newTaskQuerry: RequestParams.Index<IDlessTask> = {
-        index: 'task',
-        body: newTask
-    }
-    
-    Client_meredith.index<IndexResponse>(newTaskQuerry)
-    .then(({ body, statusCode, headers, warnings, meta }) => {
-        if (statusCode != 201) { throw new Error("Request to database was unsuccessful."); }
-        
-        res.send(JSON.stringify({ body }, null, 2));
+    postTask(newTask)
+    .then(response => {
+        res.send(JSON.stringify({ response }, null, 2));
     }).catch(reason => {
         res.status(503).send(reason.toString());
     })

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Client_meredith from '../../lib/db/Client_meredith'
+import Client_meredith from '../../../lib/db/Client_meredith'
 
-import { Task, IDlessTask } from '../../types/interfaces/Task'
+import { Task, IDlessTask } from '../../../types/interfaces/Task'
 import { RequestParams } from '@elastic/elasticsearch'
-import { SearchResponse } from '../../types/interfaces/ElasticSearch'
+import { SearchResponse } from '../../../types/interfaces/ElasticSearch'
 
 const test = async (
     req: NextApiRequest,
