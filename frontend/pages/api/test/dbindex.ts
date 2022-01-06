@@ -7,13 +7,14 @@ const test = async (
     res: NextApiResponse
 ) => {
     const newTask: IDlessTask = {
-        creationTimestamp: Date.now(),
+        creationTimestamp: new Date(),
         ownerID: "daniel",
-        public: true,
+        public: "private",
         content: {
             headline: "headline",
             content: "Subnautica čumík 5",
-        }
+        },
+        completed: false,
     }
     postTask(newTask)
     .then(response => {

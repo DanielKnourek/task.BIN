@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import Client_meredith from '../../lib/db/Client_meredith'
-import { Task } from '../../types/interfaces/Task'
+import Client_meredith from '../../../lib/db/Client_meredith'
+import { Task } from '../../../types/interfaces/Task'
 
 const test = async (
   req: NextApiRequest,

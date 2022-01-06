@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import FormNewTask from '../components/task/FormNewTask'
+import FormNewTask from '../../components/task/FormNewTask'
 
 const Demo: NextPage = () => {
     return (

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import AuthStatus from '../components/auth/AuthStatus'
+import AuthStatus from '../../components/auth/AuthStatus'
 
 const Demo: NextPage = () => {
     return (
