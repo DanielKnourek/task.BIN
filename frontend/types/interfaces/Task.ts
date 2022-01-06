@@ -11,22 +11,30 @@ export type Task = {
     ownerID: string,
     creationTimestamp: Date,
     exiprationTimestamp?: Date,
-    public: false | AccesGroup,
+    public: AccesGroup,
     content: TaskContent,
     completed: boolean,
 };
 
-export type IDlessTask = Omit<Task, 'id'>;
+export type IDlessTask = Omit<Task, 'id' >
 
 export type NewTask = Pick<Task, 'public' | 'content' | 'exiprationTimestamp'>;
 
 export type FormUtilTypes = {
     allowDeadline?: boolean,
+} & FormOperationResponse
+
+export type FormOperationResponse = {
     responseStatus?: {
         status: 201,
-        message?: 'created'
+        message?: 'created',
+        taskID?: string,
     } | {
         status: 500,
-        message?: 'Error, please try again.'
+        message?: 'Something went wrong, try again.'
+    } |
+    {
+        status: number,
+        message?: string
     },
 }

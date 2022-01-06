@@ -7,7 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import cs from 'date-fns/locale/cs';
 
 // --- custom ---
-import { NewTask, FormUtilTypes } from "../../types/interfaces/Task";
+import { NewTask, FormUtilTypes, FormOperationResponse } from "../../types/interfaces/Task";
+import apiFetch from "../../lib/apiFetch"
 
 
 type InfoComponentProps = {
@@ -50,45 +51,143 @@ const FormNewTask = function () {
     // console.log(errors);
 
     // console.log(watch("public"))
+    // const handleHandleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+    //     handleSubmit(uploadTask)(e)
+    //     .catch( err => {
+    //         console.log(err);
+
+    //     setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
+
+    //     })
+    // }
+
+    const submitErrorHandler = (e: any) => {
+        console.log(e);
+        setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
+    }
 
     const uploadTask = async (data: NewTask & FormUtilTypes) => {
+        setValue("responseStatus", undefined);
         if (data.allowDeadline == false) {
             data.exiprationTimestamp = new Date(0);
-            delete data.allowDeadline;
+            // delete data.allowDeadline;
         }
         // console.log(data);
 
-        function sleep(ms: number) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        const res = await fetch('/api/test/echo', {
-            body: JSON.stringify({
-                tasks: [data]
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST'
-        })
+        // function sleep(ms: number) {
+        //     return new Promise(resolve => setTimeout(resolve, ms));
+        // }
 
-        const status = res.status;
-        // console.log(status);
-        
-        await sleep(2000);
-        setValue("responseStatus", { status: 500, message: "Error, please try again." })
+        // const res = await fetch('/api/test/echo', {
+        //     body: JSON.stringify({
+        //         tasks: [data]
+        //     }),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     method: 'POST'
+        // })
+        const { allowDeadline, responseStatus, ...OnlyData } = data;
+
+        // ---------------------
+        const res = await apiFetch<FormOperationResponse>('/api/task/newTask',
+            {
+                tasks: [OnlyData],
+            })
+            .then(data => {
+                // console.log(data) //TODO remove debug
+                // return data.data
+                setValue("responseStatus", { status: 201, message: "created" });
+
+            }).catch(err => {
+                setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
+
+                // console.log(err)
+            })
+        // ---------------------
+
+        // await fetch('/api/task/newTask', {
+        //     body: JSON.stringify(
+        //         {
+        //             tasks: [OnlyData]
+        //         }
+        //     ),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     method: 'POST'
+        // }).then(response => {
+        //     if (!!response.ok) { throw new Error("oh nooooo"); } else { return response.json() }
+        // })
+        //     .then(res => { console.log("A result", res) })
+        //     .catch(err => { console.log("oh nooooo", {err: err}) })
+
+        // try {
+        //     await fetch('/api/task/newTask', {
+        //         body: JSON.stringify(
+        //             {
+        //                 tasks: [OnlyData],
+        //             }
+        //         ),
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         method: 'POST'
+        //     })
+        //         .then(response => {
+        //             // console.log(response) //TODO remove debug
+        //             if (!response.ok) {
+        //                 throw new Error(response.statusText);
+        //             }
+        //             return response.json();
+        //         })
+        //         .then(data => {
+        //             // console.log(data) //TODO remove debug
+        //             // return data.data
+        //             setValue("responseStatus", { status: 201, message: "created" });
+
+        //         }).catch(err => {
+        //             setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
+
+        //             // console.log(err)
+        //         })
+        // } catch (error) {
+        //     console.log("I catched error");
+        //     console.log(error);
+        // }
+
+
+
+
+        // .then(
+        //     res => console.log(res.responseStatus)
+        // ).catch(
+        //     err => console.error(err)
+        // )
+
+        // TODO finish form handling
+        // console.log(res);
+
+
+
+        // const status = res.status;
+        // // console.log(status);
+
+        // await sleep(2000);
+        // setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
         // setValue("responseStatus", { status: 201, message: "created" });
 
-        console.log(res)
-        await res.json().then(res => {
-            console.log(res);
-        })
+        // console.log(res)
+        // await res.json().then(res => {
+        //     console.log(res);
+        // })
 
-        // console.log(result);
+        // // console.log(result);
     }
 
     useEffect(() => {
         if (isSubmitSuccessful && watch("responseStatus.status") == 201) {
-            reset({responseStatus: watch("responseStatus")}, {keepDefaultValues: true});
+            reset({ responseStatus: watch("responseStatus") }, { keepDefaultValues: true });
         }
     }, [isSubmitSuccessful, reset, watch])
 
@@ -137,7 +236,7 @@ const FormNewTask = function () {
 
                         </div>
                         <div className="mt-2">
-                            <label className="inline-flex items-center">
+                            <div className="inline-flex justify-around w-full">
                                 <label
                                     className={`${watch("public") == "public" ? "bg-purple-600" : "bg-gray-600"} focus:ring text-white rounded-md p-1 mx-2`}
                                 >
@@ -159,7 +258,7 @@ const FormNewTask = function () {
                                         value="private"
                                     />
                                 </label>
-                            </label>
+                            </div>
                         </div>
                         <div className="mt-2"></div>
                         <label className="inline-flex items-center bg-purple-600 text-white rounded-t-md p-1">
@@ -172,13 +271,13 @@ const FormNewTask = function () {
                         <div
                             className="p-1 bg-purple-600 flex justify-center"
                         >
-                            <div>
+                            <div className="w-full">
                                 <Controller
                                     control={control}
                                     name="exiprationTimestamp"
                                     render={({ field: { onChange, onBlur, value, ref } }) => (
                                         <DatePicker
-                                            className={!watch("allowDeadline") ? "line-through bg-gray-400 text-center" : "text-center w-full"}
+                                            className={`${!watch("allowDeadline") ? "line-through bg-gray-400" : ""} text-center w-full`}
                                             disabled={!watch("allowDeadline")}
                                             locale={cs}
                                             showTimeSelect
@@ -201,7 +300,7 @@ const FormNewTask = function () {
                                 : watch("responseStatus.status") == 201
                                     ? <InfoComponent message="Successfully created" color="bg-green-500" />
                                     : watch("responseStatus.status")
-                                        ? <InfoComponent message={watch("responseStatus.message")} color="bg-red-400" />
+                                        ? <InfoComponent message={`Error: ${watch("responseStatus.message")}`} color="bg-red-400" />
                                         : <InfoComponent message="default state" color="invisible" />
                         }
                     </div>
