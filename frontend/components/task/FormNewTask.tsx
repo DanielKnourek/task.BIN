@@ -9,6 +9,7 @@ import cs from 'date-fns/locale/cs';
 // --- custom ---
 import { NewTask, FormUtilTypes, FormOperationResponse } from "../../types/interfaces/Task";
 import apiFetch from "../../lib/apiFetch"
+import useTasks, { useTasksContext } from "../../lib/hooks/useTasks";
 
 
 type InfoComponentProps = {
@@ -25,11 +26,27 @@ const InfoComponent = ({ message, color }: InfoComponentProps) => {
     )
 }
 
-const FormNewTask = function () {
+type FormNewTaskParams = {
+    defaultValues?: NewTask,
+}
 
-    const defaultFormValues: NewTask = {
+const FormNewTask = function ({ defaultValues }: FormNewTaskParams) {
+    const { message, type: formType, form } = useTasksContext();
+    const { onCreate, onUpdate } = useTasks();
 
-        public: "private",
+    const onSubmitHandler = (formType == 'edit')  
+        ? (FormReqData: NewTask) => {
+            if (!!form?.defaultFormValues) {
+                return onUpdate(FormReqData, form.defaultFormValues.id)
+            }
+            throw Error("Cannot update.")
+        }
+        : onCreate;
+    
+    const defaultFormValues: NewTask = !!defaultValues ? defaultValues : {
+        status: {
+            access: "private",
+        },
         exiprationTimestamp: (() => {
             const today = new Date();
             const defaultDate = new Date(today);
@@ -45,144 +62,44 @@ const FormNewTask = function () {
     }
 
     const { register, handleSubmit, watch, control, setValue, reset, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<NewTask & FormUtilTypes>({
-        defaultValues: { ...defaultFormValues, allowDeadline: false }
+        defaultValues: { ...defaultFormValues, allowDeadline: !!defaultValues?.exiprationTimestamp }
     });
-
-    // console.log(errors);
-
-    // console.log(watch("public"))
-    // const handleHandleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
-    //     handleSubmit(uploadTask)(e)
-    //     .catch( err => {
-    //         console.log(err);
-
-    //     setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
-
-    //     })
-    // }
-
-    const submitErrorHandler = (e: any) => {
-        console.log(e);
-        setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
-    }
 
     const uploadTask = async (data: NewTask & FormUtilTypes) => {
         setValue("responseStatus", undefined);
         if (data.allowDeadline == false) {
             data.exiprationTimestamp = new Date(0);
-            // delete data.allowDeadline;
         }
-        // console.log(data);
+        // const { allowDeadline, responseStatus, ...OnlyData } = data;
+        const FormReqData: NewTask = {
+            content: data.content,
+            status: {
+                access: data.status.access,
+            },
+            exiprationTimestamp: data.exiprationTimestamp,
+        }
 
-        // function sleep(ms: number) {
-        //     return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-
-        // const res = await fetch('/api/test/echo', {
-        //     body: JSON.stringify({
-        //         tasks: [data]
-        //     }),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     method: 'POST'
-        // })
-        const { allowDeadline, responseStatus, ...OnlyData } = data;
-
-        // ---------------------
-        const res = await apiFetch<FormOperationResponse>('/api/task/newTask',
-            {
-                tasks: [OnlyData],
-            })
+        await onSubmitHandler(FormReqData)
             .then(data => {
                 // console.log(data) //TODO remove debug
-                // return data.data
-                setValue("responseStatus", { status: 201, message: "created" });
+                setValue("responseStatus", { status: 201, message: message.success });
 
             }).catch(err => {
-                setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
-
-                // console.log(err)
+                setValue("responseStatus", { status: 500, message: message.error })
             })
-        // ---------------------
 
-        // await fetch('/api/task/newTask', {
-        //     body: JSON.stringify(
-        //         {
-        //             tasks: [OnlyData]
-        //         }
-        //     ),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     method: 'POST'
-        // }).then(response => {
-        //     if (!!response.ok) { throw new Error("oh nooooo"); } else { return response.json() }
-        // })
-        //     .then(res => { console.log("A result", res) })
-        //     .catch(err => { console.log("oh nooooo", {err: err}) })
 
-        // try {
-        //     await fetch('/api/task/newTask', {
-        //         body: JSON.stringify(
-        //             {
-        //                 tasks: [OnlyData],
-        //             }
-        //         ),
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         method: 'POST'
+        // const res = await apiFetch<FormOperationResponse>('/api/task/create',
+        //     {
+        //         tasks: [FormReqData],
         //     })
-        //         .then(response => {
-        //             // console.log(response) //TODO remove debug
-        //             if (!response.ok) {
-        //                 throw new Error(response.statusText);
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             // console.log(data) //TODO remove debug
-        //             // return data.data
-        //             setValue("responseStatus", { status: 201, message: "created" });
+        //     .then(data => {
+        //         // console.log(data) //TODO remove debug
+        //         setValue("responseStatus", { status: 201, message: "created" });
 
-        //         }).catch(err => {
-        //             setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
-
-        //             // console.log(err)
-        //         })
-        // } catch (error) {
-        //     console.log("I catched error");
-        //     console.log(error);
-        // }
-
-
-
-
-        // .then(
-        //     res => console.log(res.responseStatus)
-        // ).catch(
-        //     err => console.error(err)
-        // )
-
-        // TODO finish form handling
-        // console.log(res);
-
-
-
-        // const status = res.status;
-        // // console.log(status);
-
-        // await sleep(2000);
-        // setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
-        // setValue("responseStatus", { status: 201, message: "created" });
-
-        // console.log(res)
-        // await res.json().then(res => {
-        //     console.log(res);
-        // })
-
-        // // console.log(result);
+        //     }).catch(err => {
+        //         setValue("responseStatus", { status: 500, message: "Something went wrong, try again." })
+        //     })
     }
 
     useEffect(() => {
@@ -192,7 +109,7 @@ const FormNewTask = function () {
     }, [isSubmitSuccessful, reset, watch])
 
     return (
-        <form onSubmit={handleSubmit(uploadTask)} className="m-5 flex justify-center" >
+        <form onSubmit={handleSubmit(uploadTask)} className="w-full" >
             <div className="w-auto flex flex-col">
                 <div className="bg-gray-200 border-2 border-gray-400 w-auto flex flex-col space-y-2 rounded-sm">
                     <div className="p-2">
@@ -238,10 +155,10 @@ const FormNewTask = function () {
                         <div className="mt-2">
                             <div className="inline-flex justify-around w-full">
                                 <label
-                                    className={`${watch("public") == "public" ? "bg-purple-600" : "bg-gray-600"} focus:ring text-white rounded-md p-1 mx-2`}
+                                    className={`${watch("status.access") == "public" ? "bg-purple-600" : "bg-gray-600"} focus:ring text-white rounded-md p-1 mx-2`}
                                 >
                                     Public
-                                    <input {...register("public", { required: true })}
+                                    <input {...register("status.access", { required: true })}
                                         className="form-checkbox mx-2"
                                         type="radio"
                                         value="public"
@@ -249,10 +166,10 @@ const FormNewTask = function () {
                                 </label>
                                 <div className="mx-2"></div>
                                 <label
-                                    className={`${watch("public") == "private" ? "bg-purple-600" : "bg-gray-600"} focus:ring text-white rounded-md p-1 mx-2`}
+                                    className={`${watch("status.access") == "private" ? "bg-purple-600" : "bg-gray-600"} focus:ring text-white rounded-md p-1 mx-2`}
                                 >
                                     Private
-                                    <input {...register("public", { required: true })}
+                                    <input {...register("status.access", { required: true })}
                                         className="form-checkbox mx-2"
                                         type="radio"
                                         value="private"
@@ -298,7 +215,7 @@ const FormNewTask = function () {
                             isSubmitting
                                 ? <InfoComponent message="Uploading" color="bg-blue-400" />
                                 : watch("responseStatus.status") == 201
-                                    ? <InfoComponent message="Successfully created" color="bg-green-500" />
+                                    ? <InfoComponent message={message.success} color="bg-green-500" />
                                     : watch("responseStatus.status")
                                         ? <InfoComponent message={`Error: ${watch("responseStatus.message")}`} color="bg-red-400" />
                                         : <InfoComponent message="default state" color="invisible" />
@@ -309,7 +226,7 @@ const FormNewTask = function () {
                     className="bg-blue-500 hover:bg-blue-400 active:bg-blue-600 focus:ring text-white rounded-b-md p-1"
                     type="submit"
                 >
-                    Create new Task
+                    {message.title}
                 </button>
             </div>
         </form>

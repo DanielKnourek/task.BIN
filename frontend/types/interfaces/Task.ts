@@ -4,21 +4,26 @@ export type TaskContent = {
     tags?: string[],
 };
 
-export type AccesGroup = "public" | "private"
+export type AccessGroup = "public" | "private"
 
 export type Task = {
     id: string,
     ownerID: string,
     creationTimestamp: Date,
     exiprationTimestamp?: Date,
-    public: AccesGroup,
     content: TaskContent,
-    completed: boolean,
+    status: {
+        access: AccessGroup,
+        completed: boolean,
+    },
 };
 
-export type IDlessTask = Omit<Task, 'id' >
+export type PartialTask = Partial<NewTask>
 
-export type NewTask = Pick<Task, 'public' | 'content' | 'exiprationTimestamp'>;
+export type IDlessTask = Omit<Task, 'id'>
+
+export type NewTask = Pick<Task, 'content' | 'exiprationTimestamp'> & { status : { access: AccessGroup}};
+// export type NewTask = Pick<Task, 'status' | 'content' | 'exiprationTimestamp'>;
 
 export type FormUtilTypes = {
     allowDeadline?: boolean,

@@ -7,16 +7,18 @@ const apiFetch = <T>(url: string, reqBody: any): Promise<T> => {
     method: 'POST'
   })
     .then(response => {
-      // console.log(response) //TODO remove debug
       if (!response.ok) {
         throw new Error(response.statusText)
       }
-      return response.json() as Promise<{ data: T }>
+      return response.json() as Promise<T>
     })
     .then(data => {
-      // console.log(data) //TODO remove debug
-      return data.data
+      return data;
     })
 }
 
 export default apiFetch;
+
+export const enableESToSync = async (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

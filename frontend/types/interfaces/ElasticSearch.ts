@@ -42,7 +42,18 @@ export interface IndexResponse {
     _type: string;
     _id: string;
     _version?: number;
-    result: string,
+    result: string;
+    _shards: ShardsResponse;
+    _seq_no: number;
+    _primary_term: number;
+}
+
+export interface UpdateResponse {
+    _index: string;
+    _type: string;
+    _id: string;
+    _version?: number;
+    result: string; // updated
     _shards: ShardsResponse;
     _seq_no: number;
     _primary_term: number;

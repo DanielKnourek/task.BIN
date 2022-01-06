@@ -9,16 +9,12 @@ const postTask = async (newTask: IDlessTask) => {
         index: 'task',
         body: newTask
     }
-    // console.log("---querry---")
-    // console.info(JSON.stringify(newTaskQuerry))  // TODO remove log
-    // console.log("------")
+    
     return Client_meredith.index<IndexResponse>(newTaskQuerry)
         .then(({ body, statusCode, headers, warnings, meta }) => {
             if (statusCode != 201) { throw new Error("Request to database was unsuccessful."); }
-            // console.log(body);  // TODO remove log
             return body;
         }).catch(reason => {
-            // console.log(reason); // TODO remove log
             throw reason;
         });
 }
