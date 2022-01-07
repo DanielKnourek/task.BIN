@@ -9,12 +9,14 @@ const test = async (
     const newTask: IDlessTask = {
         creationTimestamp: new Date(),
         ownerID: "daniel",
-        public: "private",
+        status: {
+            access: "private",
+            completed: false,
+        },
         content: {
             headline: "headline",
             content: "Subnautica čumík 5",
         },
-        completed: false,
     }
     postTask(newTask)
     .then(response => {
