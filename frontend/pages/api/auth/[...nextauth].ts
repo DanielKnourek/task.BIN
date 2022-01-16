@@ -1,4 +1,4 @@
-import NextAuth, { Session, User } from 'next-auth'
+import NextAuth, { Session } from 'next-auth'
 
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
@@ -7,8 +7,8 @@ import Discord from 'next-auth/providers/discord'
 const nextAuth = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!,
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -30,21 +30,28 @@ const nextAuth = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-        
-        const user_info: User = {
-          id: "101",
-          name: "Guest", 
-          email: "host@task.bin.com",
-          address: "Na Slené",
-          image: "https://t4.ftcdn.net/jpg/03/73/50/09/360_F_373500999_wAWkzJZRb2XHm9KeHEDcCJBkx4wR67us.jpg",
+        let test_expires = new Date();
+        test_expires.setDate(test_expires.getDate() + 10);
+
+        const test_user: Session = {
+          sub: 101,
+          expires: test_expires.toString(),
+          user: {
+            id: "101",
+            name: "Guest",
+            email: "host@task.bin.com",
+            address: "Na Slené",
+            image: "https://t4.ftcdn.net/jpg/03/73/50/09/360_F_373500999_wAWkzJZRb2XHm9KeHEDcCJBkx4wR67us.jpg",
+          },
         }
-        return user_info;
+        return test_user;
       }
     })
   ],
   session: {
     strategy: "jwt"
   },
+  secret: process.env.NEXTAUTH_SECRET, 
   jwt: {
     // A secret to use for key generation
     // https://generate-secret.now.sh/32
@@ -52,7 +59,6 @@ const nextAuth = NextAuth({
   },
   callbacks: {
     async jwt({ token, account }) {
-
       return token
     },
     async session({ session, token, user }) {

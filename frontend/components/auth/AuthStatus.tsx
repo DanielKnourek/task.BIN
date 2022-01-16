@@ -1,4 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
+import { MdAccountCircle, MdLogin, MdLogout } from "react-icons/md";
+import { SideBarItem } from "../sideBar";
 
 const AuthStatus = function (): JSX.Element {
   const { data: session, status } = useSession();
@@ -8,16 +10,22 @@ const AuthStatus = function (): JSX.Element {
     displayName = (session.user.name === undefined) ? displayName : session.user.name;
     return (
       <>
-        <br />
-        Signed in as {displayName}<br />
-        <button onClick={() => signOut()}>Sign out</button>
+        <SideBarItem icon={<MdAccountCircle size={28} />} text={`Signed as ${displayName}`}/>
+        <button onClick={() => signOut()}
+          name="Sign-out"
+        >
+          <SideBarItem icon={<MdLogout size={28} />} text='Sign out' />
+        </button>
       </>
     )
   }
   return (
     <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button onClick={() => signIn()}
+        name="Sign-in"
+      >
+        <SideBarItem icon={<MdLogin size={28} />} text='Sign in' />
+      </button>
     </>
   )
 }
