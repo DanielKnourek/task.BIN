@@ -40,11 +40,14 @@ const SideBar = ({ }: SideBarProps) => {
                     <SideBarItem icon={<MdHome size={28} />} text='Go → Home' />
                 </a>
             </Link>
-            <Link href={"/my"} passHref>
-                <a>
-                    <SideBarItem icon={<ImDrawer className='-translate-y-0.5' size={21} />} text='Go → My tasks' />
-                </a>
-            </Link>
+            {
+                status === "authenticated" && session &&
+                <Link href={"/my"} passHref>
+                    <a>
+                        <SideBarItem icon={<ImDrawer className='-translate-y-0.5' size={21} />} text='Go → My tasks' />
+                    </a>
+                </Link>
+            }
             <SideBarTools />
 
             <div className='flex-grow'></div>
