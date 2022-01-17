@@ -30,21 +30,25 @@ const nextAuth = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-        let test_expires = new Date();
-        test_expires.setDate(test_expires.getDate() + 10);
-
-        const test_user: Session = {
-          sub: 101,
-          expires: test_expires.toString(),
-          user: {
-            id: "101",
-            name: "Guest",
-            email: "host@task.bin.com",
-            address: "Na Slené",
-            image: "https://t4.ftcdn.net/jpg/03/73/50/09/360_F_373500999_wAWkzJZRb2XHm9KeHEDcCJBkx4wR67us.jpg",
-          },
+        
+        if (credentials?.username.normalize() == 'testuser1' && credentials.password == 'Tt123456'){
+          let test_expires = new Date();
+          test_expires.setDate(test_expires.getDate() + 10);
+  
+          const test_user: Session = {
+            sub: 101,
+            expires: test_expires.toString(),
+            user: {
+              id: "101",
+              name: "Guest",
+              email: "host@task.bin.com",
+              address: "Na Slené",
+              image: "https://t4.ftcdn.net/jpg/03/73/50/09/360_F_373500999_wAWkzJZRb2XHm9KeHEDcCJBkx4wR67us.jpg",
+            },
+          }
+          return test_user;
         }
-        return test_user;
+        return null;
       }
     })
   ],
